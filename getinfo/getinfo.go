@@ -14,7 +14,7 @@ import (
 
 func GetInfo(w http.ResponseWriter, r *http.Request) {
 
-	err := godotenv.Load(".env")
+	err := godotenv.Load(".vscode/.env")
 
 	// もし err がnilではないなら、"読み込み出来ませんでした"が出力されます。
 	if err != nil {
@@ -60,6 +60,6 @@ func GetInfo(w http.ResponseWriter, r *http.Request) {
 }
 func checkErr(err error) {
 	if err != nil {
-		panic(err)
+		//panic(err)
 	}
 }
