@@ -15,7 +15,7 @@ import (
 func GetInfo(w http.ResponseWriter, r *http.Request) {
 
 	err := godotenv.Load(".vscode/.env")
-
+	checkErr(err)
 	// もし err がnilではないなら、"読み込み出来ませんでした"が出力されます。
 	if err != nil {
 		fmt.Printf("読み込み出来ませんでした: %v", err)
@@ -35,7 +35,8 @@ func GetInfo(w http.ResponseWriter, r *http.Request) {
 	var date string
 	var datarows []idata                               //データを格納する配列
 	rows, err := db.Query("SELECT * FROM public.info") //全取得
-	for rows.Next() {                                  //1つずつ処理
+	checkErr(err)
+	for rows.Next() { //1つずつ処理
 		switch err := rows.Scan(&id, &title, &about, &date); err { //エラーの有無でスイッチ
 		case sql.ErrNoRows:
 			fmt.Println("No rows were returned")
@@ -51,7 +52,6 @@ func GetInfo(w http.ResponseWriter, r *http.Request) {
 			checkErr(err)
 		}
 	}
-	checkErr(err)
 	jsoninfo, _ := json.Marshal(datarows) //jsonに変換
 	io.WriteString(w, string(jsoninfo))   //string化したものを送信
 }
