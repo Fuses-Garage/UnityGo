@@ -1,15 +1,15 @@
 package getinfo
 
 import (
-	"database/sql"
-	"encoding/json"
-	"fmt" //基本的な入出力処理
-	"io"
-	"net/http"
+	"database/sql"//SQL操作
+	"encoding/json"//json相互変換
+	"fmt"      //基本的な入出力処理
+	"io"       //入出力
+	"net/http" //http通信
 	"os"
 
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
+	"github.com/joho/godotenv"//.envの使用
+	_ "github.com/lib/pq"//ポスグレ使用
 )
 
 func GetInfo(w http.ResponseWriter, r *http.Request) {
@@ -20,10 +20,10 @@ func GetInfo(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Printf("読み込み出来ませんでした: %v", err)
 	}
-	db, err := sql.Open("postgres", "user="+os.Getenv("ENVUSER")+" password="+os.Getenv("ENVPASS")+" dbname=UniGoDB sslmode=disable")
+	db, err := sql.Open("postgres", "user="+os.Getenv("ENVUSER")+" password="+os.Getenv("ENVPASS")+" dbname=UniGoDB sslmode=disable")//DBに接続
 	checkErr(err)
 	//データの検索
-	type idata struct {
+	type idata struct {//レコード用の構造体
 		ID    int
 		TITLE string
 		ABOUT string
@@ -33,10 +33,10 @@ func GetInfo(w http.ResponseWriter, r *http.Request) {
 	var title string
 	var about string
 	var date string
-	var datarows []idata
-	rows, err := db.Query("SELECT * FROM public.info")
-	for rows.Next() {
-		switch err := rows.Scan(&id, &title, &about, &date); err {
+	var datarows []idata//データを格納する配列
+	rows, err := db.Query("SELECT * FROM public.info") //全取得
+	for rows.Next() {                                  //1つずつ処理
+		switch err := rows.Scan(&id, &title, &about, &date); err { //エラーの有無でスイッチ
 		case sql.ErrNoRows:
 			fmt.Println("No rows were returned")
 		case nil:
@@ -50,13 +50,10 @@ func GetInfo(w http.ResponseWriter, r *http.Request) {
 		default:
 			checkErr(err)
 		}
-		//fmt.Fprintf(w, "%d,%s,%s\n", id, title, about)
 	}
 	checkErr(err)
-	jsoninfo, _ := json.Marshal(datarows)
-	checkErr(err)
-
-	io.WriteString(w, string(jsoninfo))
+	jsoninfo, _ := json.Marshal(datarows) //jsonに変換
+	io.WriteString(w, string(jsoninfo))   //string化したものを送信
 }
 func checkErr(err error) {
 	if err != nil {
