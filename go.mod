@@ -1,4 +1,4 @@
-module goland
+module github.com/Fuses-Garage/UnityGo
 
 go 1.19
 
