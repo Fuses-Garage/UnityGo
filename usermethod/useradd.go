@@ -13,7 +13,7 @@ import (
 	_ "github.com/lib/pq"      //ポスグレ使用
 )
 
-func GetInfo(w http.ResponseWriter, r *http.Request) {
+func UserAdd(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" { //一つでも空欄があれば
 		io.WriteString(w, "危険なのでPOSTメソッドでアクセスしてください。") //エラーメッセージを返す
 		return
