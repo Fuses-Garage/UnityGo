@@ -1,22 +1,25 @@
 package keymethod
 
 import (
-	"encoding/hex" //16進数
+	"crypto/rsa"
+	"crypto/x509"
 	"os"
 
 	"github.com/Fuses-Garage/UnityGo/util"
 )
 
-func GetPubKey() string {
+func GetPubKey() *rsa.PublicKey {
 	bytes, err := os.ReadFile("derrsapubkey.key")
 	util.CheckErr(err)
-	hexstr := hex.EncodeToString(bytes)
-	return hexstr
+	pubk, err := x509.ParsePKCS1PublicKey(bytes)
+	util.CheckErr(err)
+	return pubk
 }
 
-func GetPrvKey() string {
+func getPrvKey() *rsa.PrivateKey {
 	bytes, err := os.ReadFile("derrsaprvkey.key")
 	util.CheckErr(err)
-	hexstr := hex.EncodeToString(bytes)
-	return hexstr
+	prvk, err := x509.ParsePKCS1PrivateKey(bytes)
+	util.CheckErr(err)
+	return prvk
 }

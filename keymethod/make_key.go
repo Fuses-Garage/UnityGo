@@ -1,7 +1,6 @@
 package keymethod
 
 import (
-	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
@@ -20,8 +19,7 @@ func MakeKey() {
 	util.CheckErr(err)
 	err = file.Close()
 	util.CheckErr(err)
-	var rsapubkey crypto.PublicKey
-	rsapubkey = rsaprvkey.Public()
+	rsapubkey := rsaprvkey.Public()
 	if rsapubkeypoint, ok := rsapubkey.(*rsa.PublicKey); ok {
 		derrsapubkey := x509.MarshalPKCS1PublicKey(rsapubkeypoint)
 		file, err = os.Create("derrsapubkey.key")
