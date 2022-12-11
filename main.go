@@ -4,10 +4,12 @@ import (
 	"net/http" //HTTPを使った通信に必要
 
 	"github.com/Fuses-Garage/UnityGo/getinfo"
+	"github.com/Fuses-Garage/UnityGo/keymethod"
 	"github.com/Fuses-Garage/UnityGo/usermethod"
 )
 
 func main() {
+	keymethod.MakeKey()
 	http.HandleFunc("/getinfo", getinfo.GetInfo)            //ルートのアクセスにHelloWorldをハンドリング
 	http.HandleFunc("/useradd", usermethod.UserAdd)         //ルートのアクセスにHelloWorldをハンドリング
 	http.HandleFunc("/login_basic", usermethod.Login_Basic) //ルートのアクセスにHelloWorldをハンドリング
