@@ -6,22 +6,13 @@ import (
 	"fmt"           //基本的な入出力処理
 	"io"            //入出力
 	"net/http"      //http通信
-	"os"
 
-	"github.com/joho/godotenv" //.envの使用
-	_ "github.com/lib/pq"      //ポスグレ使用
+	"github.com/Fuses-Garage/UnityGo/util" //自作パッケージ
+	_ "github.com/lib/pq"                  //ポスグレ使用
 )
 
 func GetInfo(w http.ResponseWriter, r *http.Request) {
-
-	err := godotenv.Load(".vscode/.env")
-	checkErr(err)
-	// もし err がnilではないなら、"読み込み出来ませんでした"が出力されます。
-	if err != nil {
-		fmt.Printf("読み込み出来ませんでした: %v", err)
-	}
-	db, err := sql.Open("postgres", "user="+os.Getenv("ENVUSER")+" password="+os.Getenv("ENVPASS")+" dbname=UniGoDB sslmode=disable") //DBに接続
-	checkErr(err)
+	db := util.LoginToDB()
 	//データの検索
 	type idata struct { //レコード用の構造体
 		ID    int
@@ -33,9 +24,9 @@ func GetInfo(w http.ResponseWriter, r *http.Request) {
 	var title string
 	var about string
 	var date string
-	var datarows []idata                               //データを格納する配列
-	rows, err := db.Query("SELECT * FROM public.info") //全取得
-	checkErr(err)
+	var datarows []idata                        //データを格納する配列
+	rows, err := db.Query("SELECT * FROM info") //全取得
+	util.CheckErr(err)
 	for rows.Next() { //1つずつ処理
 		switch err := rows.Scan(&id, &title, &about, &date); err { //エラーの有無でスイッチ
 		case sql.ErrNoRows:
@@ -49,14 +40,9 @@ func GetInfo(w http.ResponseWriter, r *http.Request) {
 				DATE:  date,
 			})
 		default:
-			checkErr(err)
+			util.CheckErr(err)
 		}
 	}
 	jsoninfo, _ := json.Marshal(datarows) //jsonに変換
 	io.WriteString(w, string(jsoninfo))   //string化したものを送信
-}
-func checkErr(err error) {
-	if err != nil {
-		//panic(err)
-	}
 }
