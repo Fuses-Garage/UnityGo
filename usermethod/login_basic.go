@@ -10,7 +10,7 @@ import (
 )
 
 func Login_Basic(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { //一つでも空欄があれば
+	if r.Method != "POST" { //POSTじゃなければ
 		io.WriteString(w, "危険なのでPOSTメソッドでアクセスしてください。") //エラーメッセージを返す
 		return
 	}

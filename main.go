@@ -13,6 +13,7 @@ func main() {
 	http.HandleFunc("/login_basic", usermethod.Login_Basic)    //ルートのアクセスにHelloWorldをハンドリング
 	http.HandleFunc("/getchallenge", usermethod.MakeChallenge) //ルートのアクセスにHelloWorldをハンドリング
 	http.HandleFunc("/login_chap", usermethod.LoginChap)       //ルートのアクセスにHelloWorldをハンドリング
+	http.HandleFunc("/getuserinfo", usermethod.GetUInfo)       //ルートのアクセスにHelloWorldをハンドリング
 	err := http.ListenAndServe(":80", nil)                     //サーバ起動
 	if err != nil {
 		panic(err)

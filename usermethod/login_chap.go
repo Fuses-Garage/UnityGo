@@ -10,7 +10,7 @@ import (
 )
 
 func LoginChap(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { //一つでも空欄があれば
+	if r.Method != "POST" { //POSTじゃなければ
 		io.WriteString(w, "危険なのでPOSTメソッドでアクセスしてください。") //エラーメッセージを返す
 		return
 	}
@@ -25,7 +25,6 @@ func LoginChap(w http.ResponseWriter, r *http.Request) {
 	var chl string
 	err = row.Scan(&chl)
 	util.CheckErr(err)
-	util.CheckErr(err)
 	if r.FormValue("pass") == "" || r.FormValue("loginname") == "" || r.FormValue("code") == "" { //一つでも空欄があれば
 		io.WriteString(w, "全てのテキストボックスに値を入力してください。") //エラーメッセージを返す
 		return
@@ -36,13 +35,11 @@ func LoginChap(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "ユーザ名かログインIDが間違っています") //エラーメッセージの情報は最低限
 		return
 	}
-
-	err = row.Scan(&passhash) //パスワード（のハッシュ値）を取得
-	util.CheckErr(err)
 	answer := util.StringtoHex(passhash + chl) //正しいレスポンスを計算
 	util.CheckErr((err))
 	if answer == resp { //2つのレスポンスが合致すれば
-		io.WriteString(w, "success") //ログイン成功
+
+		io.WriteString(w, "success "+LoginSuccess(r.FormValue("loginname"), db)) //ログイン成功
 		return
 	} else { //ヒットしないもしくは複数ヒットしたら
 		io.WriteString(w, "ユーザ名かログインIDが間違っています") //エラーメッセージの情報は最低限
